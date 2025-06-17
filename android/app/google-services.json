@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "166132457414",
+    "project_id": "taskit-d116d",
+    "storage_bucket": "taskit-d116d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166132457414:android:b0e2d8b323546df3b4dcc7",
+        "android_client_info": {
+          "package_name": "com.rolladay.taskit.taskit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "166132457414-0ehlfkgpj0t0v3do6cq56gqk2n30thsg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rolladay.taskit.taskit",
+            "certificate_hash": "1161eec515e81cf98decc8199c610ca115e00185"
+          }
+        },
+        {
+          "client_id": "166132457414-utnf6c7mculp2rgsaq4e8q91vo9k7f4n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGz8BCeNhWLJngqeq8B-xI2wCtQQNkGBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "166132457414-utnf6c7mculp2rgsaq4e8q91vo9k7f4n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "166132457414-at8lq4k2eam3koilbuu1q5savajanu4q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rolladay.taskit.taskit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
