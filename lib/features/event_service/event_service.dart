@@ -28,6 +28,8 @@ class EventService extends _$EventService {
     required DateTime to,
     required bool isAllDay,
     required bool isCompleted,
+    required String badgeId,
+    required String eventMemo
   }) async {
     final newEvent = EventModel(
       eventName: eventName.isNotEmpty ? eventName : '새 일정',
@@ -35,6 +37,8 @@ class EventService extends _$EventService {
       to: to,
       isAllDay: isAllDay,
       isCompleted: isCompleted,
+      badgeId: badgeId,
+      notes: eventMemo,
     );
     // DB에 저장
     final savedEventId = await EventRepository.addEvent(newEvent);
@@ -52,6 +56,8 @@ class EventService extends _$EventService {
     required DateTime to,
     required bool isAllDay,
     required bool isCompleted,
+    required String badgeId,
+    required String eventMemo
   }) async {
     final updatedEvent = EventModel(
       id: id,
@@ -60,6 +66,8 @@ class EventService extends _$EventService {
       to: to,
       isAllDay: isAllDay,
       isCompleted: isCompleted,
+      badgeId: badgeId,
+      notes: eventMemo,
     );
     // DB에 반영
     await EventRepository.updateEvent(updatedEvent);

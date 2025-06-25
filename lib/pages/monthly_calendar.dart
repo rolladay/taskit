@@ -64,9 +64,11 @@ class MonthlyCalendarState extends ConsumerState<MonthlyCalendar> {
       events: _selectedDateEvents,
       onTapEvent: (event) {
         showModalBottomSheet(
+
+          backgroundColor: Colors.white,
           context: context,
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
           ),
           builder: (context) {
             return EventDetailSheet(
@@ -125,6 +127,7 @@ class MonthlyCalendarState extends ConsumerState<MonthlyCalendar> {
             Expanded(
               flex: 7,
               child: SfCalendar(
+
                 view: CalendarView.month,
                 dataSource: _dataSource,
                 controller: _calendarController,
@@ -162,7 +165,7 @@ class MonthlyCalendarState extends ConsumerState<MonthlyCalendar> {
                   }
 
                   if (TimeUtils.isSameDay(details.date, DateTime.now())) {
-                    textColor = Colors.blue;
+                    textColor = Colors.black87;
                   }
                   return Container(
                     decoration: const BoxDecoration(
@@ -179,8 +182,14 @@ class MonthlyCalendarState extends ConsumerState<MonthlyCalendar> {
                         alignment: Alignment.topCenter,
                         child: Text(
                           details.date.day.toString(),
-                          style: TextStyle(
-                            fontSize: 11,
+                          style: TimeUtils.isSameDay(details.date, DateTime.now())
+                              ? const TextStyle(
+                            fontSize: 11,           // 오늘 날짜는 더 크게
+                            fontWeight: FontWeight.w900, // 오늘 날짜는 굵게
+                            color: Colors.black,
+                          )
+                              : TextStyle(
+                            fontSize: 11,           // 기본 크기
                             color: textColor,
                           ),
                         ),
@@ -265,12 +274,24 @@ class MonthlyCalendarState extends ConsumerState<MonthlyCalendar> {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Taskit  ${DateFormat('MM/dd').format(_selectedDate)} ',
-                style: GoogleFonts.tiltWarp(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    'Taskit  ${DateFormat('MM/dd').format(_selectedDate)} ',
+                    style: GoogleFonts.tiltWarp(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${_selectedDateEvents.length} EA ',
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 4),

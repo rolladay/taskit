@@ -18,7 +18,7 @@ class MyBtnContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       width: double.infinity,
-      height: 50.0,
+      height: 48.0,
       child: child,
     );
   }

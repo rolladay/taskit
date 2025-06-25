@@ -3,10 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../components/appointment_builder.dart';
+import '../components/common_components.dart';
+import '../components/event_detail_sheet.dart';
 import '../features/calendar_features/calendar_data_source.dart';
 import '../features/providers/selected_date_provider.dart';
+import '../models/event_model/event_model.dart';
 import '../services/objectbox/event_model_repository.dart';
 import 'create_event.dart';
+
 
 class DayPlanner extends ConsumerStatefulWidget {
   const DayPlanner({super.key});
@@ -48,6 +52,8 @@ class DayPlannerState extends ConsumerState<DayPlanner> {
     });
   }
 
+
+
   @override
   void dispose() {
     _calendarController.dispose();
@@ -57,19 +63,44 @@ class DayPlannerState extends ConsumerState<DayPlanner> {
   @override
   Widget build(BuildContext context) {
     _selectedDate = ref.watch(selectedDateProvider);
+    final today = DateTime.now();
+    final diff = _selectedDate.difference(DateTime(today.year, today.month, today.day)).inDays;
+
+    String dDayText;
+    if (diff == 0) {
+      dDayText = "Today";
+    } else if (diff > 0) {
+      dDayText = "D+$diff";
+    } else {
+      dDayText = "D$diff";
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
-        title: Text(
-          'Schedule',
-          // DateFormat('yyyy dd MMMM').format(_selectedDate),
-          style: GoogleFonts.paytoneOne(
-            fontSize: 22,
-            // fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Schedule',
+              // DateFormat('yyyy dd MMMM').format(_selectedDate),
+              style: GoogleFonts.tiltWarp(
+                fontSize: 22,
+                // fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(width: 8,),
+            Text(
+              dDayText,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
@@ -82,12 +113,9 @@ class DayPlannerState extends ConsumerState<DayPlanner> {
         padding: const EdgeInsets.all(8.0),
         child: SfCalendar(
           dataSource: _dataSource,
-
-
+          todayHighlightColor: Colors.black,
           //scheduler에서
           appointmentBuilder: appointmentBuilder,
-
-
 
           appointmentTextStyle: const TextStyle(
             fontSize: 10, // 원하는 크기로 조정
@@ -96,10 +124,6 @@ class DayPlannerState extends ConsumerState<DayPlanner> {
           ),
           headerHeight: 0,
           viewHeaderHeight: 120,
-
-
-
-
 
           // 사용자가 스와이프나 탭할떄 호출되는 함수
           onViewChanged: (ViewChangedDetails details) {
@@ -113,16 +137,58 @@ class DayPlannerState extends ConsumerState<DayPlanner> {
           },
           controller: _calendarController,
           view: CalendarView.day,
+          onTap: (CalendarTapDetails details) {
+            print('onTap called');
+            print('details: $details');
+            print('appointments: ${details.appointments}');
 
-          // 롱탭했을때 뭘 줄지 여기 정의, 수정이 되는게 좋겠다.
-          onLongPress: (details) {
-            showDialog(
-              context: context,
-              builder: (context) => CreateEventPage(
-                initialDate: details.date ?? DateTime.now(),
-                onEventCreated: (newEvent) => _loadEvents(),
-              ),
-            );
+            if (details.targetElement == CalendarElement.calendarCell ||
+                details.targetElement == CalendarElement.appointment) {
+              final selectedEvent = findSelectedEvent(details.date, details.appointments);
+              print('showModalBottomSheet 호출 직전');
+              if (selectedEvent != null) {
+                // 이벤트 상세 모달
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  ),
+                  builder: (context) => EventDetailSheet(
+                    event: selectedEvent,
+                    onDelete: () {
+                      Navigator.pop(context);
+                      _loadEvents();
+                    },
+                    onEdit: () {
+                      Navigator.pop(context);
+                      // 수정 화면 이동 등 추가 가능
+                    },
+                  ),
+                );
+                print('showModalBottomSheet 호출 직후');
+              } else {
+                // 이벤트가 없으면 일정 생성 페이지로 이동
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        CreateEventPage(
+                          initialDate: details.date!,
+                          onEventCreated: (EventModel newEvent) async {
+                            await _loadEvents();
+                          },
+                        ),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return child;
+                    },
+                  ),
+                );
+              }
+            }
           },
           timeSlotViewSettings: const TimeSlotViewSettings(
             startHour: 06,
@@ -133,19 +199,6 @@ class DayPlannerState extends ConsumerState<DayPlanner> {
           ),
           todayTextStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => CreateEventPage(
-              initialDate: _selectedDate,
-              onEventCreated: (newEvent) {
-                _loadEvents();
-
-              }
-          ),
-        ),
-        child: const Icon(Icons.add),
       ),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:taskit/components/constants.dart';
 import 'package:taskit/components/my_btn_container.dart';
 import 'package:taskit/components/my_sized_box.dart';
+import '../components/badge_icon_list.dart';
 import '../features/event_service/event_service.dart';
 import '../features/common_features/basic_features.dart';
 import '../models/event_model/event_model.dart';
@@ -34,7 +34,7 @@ class _CreateEventPageState extends ConsumerState<CreateEventPage> {
   bool isAlarm = false;
   bool isCompleted = false;
   bool isSaveButtonEnabled = false;
-  int selectedIconIndex = 0;
+  String selectedBadgeId = badgeIcons.first.id;
 
   @override
   void initState() {
@@ -43,6 +43,7 @@ class _CreateEventPageState extends ConsumerState<CreateEventPage> {
     eventMemoController = TextEditingController();
     selectedStartDate = widget.initialDate;
     selectedEndDate = widget.initialDate.add(const Duration(hours: 1));
+
   }
 
   @override
@@ -139,13 +140,17 @@ class _CreateEventPageState extends ConsumerState<CreateEventPage> {
       to: selectedEndDate,
       isAllDay: isAllDay,
       isCompleted: isCompleted,
+      badgeId: selectedBadgeId,
+      eventMemo: eventMemoController.text,
     );
 
     if (mounted) {
       final latestEvent = ref.read(eventServiceProvider).last;
       widget.onEventCreated(latestEvent);
       handlePopWithKeyboardCheck(context);
+      print(selectedBadgeId);
     }
+
   }
 
   @override
@@ -161,7 +166,7 @@ class _CreateEventPageState extends ConsumerState<CreateEventPage> {
         backgroundColor: Colors.white,
         centerTitle: true,
         title: const Text(
-          'Make Taskit',
+          'New Task',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         bottom: PreferredSize(
@@ -301,8 +306,6 @@ class _CreateEventPageState extends ConsumerState<CreateEventPage> {
 
               const SizedBox(height: 8),
 
-              const SizedBox(height: 8),
-
               SizedBox(
                 height: 50,
                 child: Row(
@@ -347,41 +350,70 @@ class _CreateEventPageState extends ConsumerState<CreateEventPage> {
 
               // 시간 선택 UI (isAllDay가 false일 때만 표시)
 
-              const MySizedBox(height: 16),
+              const MySizedBox(height: 8),
 
+              SizedBox(
+                height: 50,
+                child: TextField(
+                  controller: eventMemoController,
+                  decoration: const InputDecoration(
+                    hintText: 'Memo',
+                    hintStyle: TextStyle(fontSize: 14, color: Colors.black26),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black12, width: 1),
+                    ),
+                  ),
+                  cursorColor: Colors.black,
+                ),
+              ),
+
+              const MySizedBox(height: 8),
               // 아이콘 선택 영역
               SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal, // 가로 스크롤
-                  physics: const PageScrollPhysics(), // 스냅 효과
-                  itemCount: icons.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedIconIndex = index;
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: selectedIconIndex == index
-                              ? Colors.blue
-                              : Colors.grey[200],
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        child: Icon(
-                          icons[index],
-                          color: selectedIconIndex == index
-                              ? Colors.white
-                              : Colors.black,
-                          size: 32,
-                        ),
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Badge',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
                       ),
-                    );
-                  },
+                    ),
+                    Expanded(
+                      // 또는 Flexible
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: badgeIcons.length,
+                        itemBuilder: (context, index) {
+                          final badge = badgeIcons[index];
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedBadgeId = badge.id;
+                              });
+                            },
+                            child: Opacity(
+                              opacity: selectedBadgeId == badge.id ? 1.0 : 0.4,
+                              child: Image.asset(
+                                badge.assetPath,
+                                width: 50,
+                                height: 50,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      color: Colors.black12,
+                      height: 1,
+                    ),
+                  ],
                 ),
               )
             ],

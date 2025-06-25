@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:taskit/pages/signing_in.dart';
 
 import '../features/auth_features/auth_service.dart';
@@ -9,18 +10,31 @@ class MyProfile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('Profile 자리'),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => _handleSignOut(context, ref),
-            child: const Text('로그아웃'),
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Tools',
+              // DateFormat('yyyy dd MMMM').format(_selectedDate),
+              style: GoogleFonts.tiltWarp(
+                fontSize: 22,
+                // fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(color: Colors.black, height: 2.0),
+        ),
       ),
+      body: Text('1'),
     );
   }
 

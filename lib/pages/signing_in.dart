@@ -75,7 +75,7 @@ class _SigningInPageState extends ConsumerState<SigningInPage> {
           _isSignedIn = true; // 로그인 성공 상태로 설정
         });
         print('로그인 감지: ${next.email}');
-        _timer = Timer(const Duration(seconds: 2), () {
+        _timer = Timer(const Duration(seconds: 1), () {
           _navigateToHome();
         });
       }

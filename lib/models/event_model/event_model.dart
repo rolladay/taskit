@@ -12,7 +12,9 @@ class EventModel {
   final DateTime to;
   final bool isAllDay;
   final bool isCompleted;
-  final String notes;
+  final String badgeId;
+  String notes;
+
 
   EventModel({
     this.id = 0,
@@ -21,6 +23,7 @@ class EventModel {
     required this.to,
     required this.isAllDay,
     required this.isCompleted,
+    required this.badgeId,
     this.notes = '',
   });
 
@@ -33,6 +36,7 @@ class EventModel {
     bool? isAllDay,
     bool? isCompleted,
     String? notes,
+    String? badgeId,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -42,6 +46,7 @@ class EventModel {
       isAllDay: isAllDay ?? this.isAllDay,
       isCompleted: isCompleted ?? this.isCompleted,
       notes: notes ?? this.notes,
+      badgeId : badgeId ?? this.badgeId,
     );
   }
 }

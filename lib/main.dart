@@ -56,7 +56,17 @@ class MyApp extends StatelessWidget {
         );
       },
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        colorScheme: const ColorScheme(
+          brightness: Brightness.light,
+          primary: Colors.black,
+          onPrimary: Colors.white,
+          secondary: Colors.white,
+          onSecondary: Colors.black,
+          error: Colors.red,
+          onError: Colors.white,
+          surface: Colors.white,
+          onSurface: Colors.black,
+        ),
         splashFactory: InkRipple.splashFactory,
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           selectedItemColor: Colors.black87,
